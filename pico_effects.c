@@ -37,6 +37,7 @@ SPDX-License-Identifier: MIT-0
 
 #include "metaballs.h"
 #include "plasma.h"
+#include "rotozoom.h"
 
 static uint8_t effect = 1;
 volatile bool switch_flag = true;
@@ -80,6 +81,10 @@ int main()
         case 1:
             plasma_render();
             break;
+        case 2:
+            rotozoom_animate();
+            rotozoom_render();
+            break;
         }
 
         hagl_flush();
@@ -87,16 +92,17 @@ int main()
         if (switch_flag) {
             switch_flag = false;
             //printf("%s at %d FPS\r\n", demo[effect], (uint32_t)effect_fps);
-            effect = (effect + 1) % 2;
+            effect = (effect + 1) % 3;
 
             switch(effect) {
             case 0:
                 metaballs_init();
-                printf("0\r\n");
                 break;
             case 1:
                 plasma_init();
-                printf("1\r\n");
+                break;
+            case 2:
+                rotozoom_init();
                 break;
             }
         }
