@@ -2,7 +2,7 @@
 
 MIT No Attribution
 
-Copyright (c) 021 Mika Tuupola
+Copyright (c) 2020-2021 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,44 +25,6 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <wchar.h>
-#include <pico/stdlib.h>
-
-#include <hagl_hal.h>
-#include <hagl.h>
-#include <font6x9.h>
-#include <aps.h>
-
-#include "metaballs.h"
-
-static bitmap_t *bb;
-wchar_t message[32];
-
-int main()
-{
-    color_t red = hagl_color(255, 0, 0);
-    color_t green = hagl_color(0, 255, 0);
-    color_t blue = hagl_color(0, 0, 255);
-
-    stdio_init_all();
-
-    bb = hagl_init();
-    if (bb) {
-        printf("Back buffer: %dx%dx%d\r\n", bb->width, bb->height, bb->depth);
-    } else {
-        printf("No back buffer\r\n");
-    }
-
-    hagl_clear_screen();
-    metaballs_init();
-
-    while (1) {
-        metaballs_animate();
-        metaballs_render();
-        hagl_flush();
-    };
-
-    return 0;
-}
+void metaballs_init();
+void metaballs_animate();
+void metaballs_render();

@@ -19,13 +19,14 @@ pico_sdk_init()
 
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(pico_effects pico_effects.c )
+add_executable(pico_effects pico_effects.c metaballs.c)
 
 pico_set_program_name(pico_effects "pico_effects")
 pico_set_program_version(pico_effects "0.1")
 
-pico_enable_stdio_uart(pico_effects 1)
+# Enable usb output, disable uart output
 pico_enable_stdio_usb(pico_effects 1)
+pico_enable_stdio_uart(pico_effects 0)
 
 # Add the standard library to the build
 target_link_libraries(pico_effects pico_stdlib)
@@ -34,7 +35,17 @@ target_link_libraries(pico_effects pico_stdlib)
 target_link_libraries(pico_effects
         hardware_spi
         hardware_dma
+        hagl
+        hagl_hal
         )
 
 pico_add_extra_outputs(pico_effects)
+
+add_subdirectory(lib/hagl)
+add_subdirectory(lib/hagl_hal)
+
+target_compile_definitions(pico_effects PRIVATE
+  NO_MENUCONFIG=1
+  HAGL_HAL_USE_DOUBLE_BUFFER=1
+)
 
