@@ -36,12 +36,23 @@ SPDX-License-Identifier: MIT-0
 #include <aps.h>
 
 #include "metaballs.h"
+#include "plasma.h"
+
+static uint8_t effect = 1;
+volatile bool switch_flag = true;
 
 static bitmap_t *bb;
 wchar_t message[32];
 
+bool switch_timer_callback(struct repeating_timer *t) {
+    switch_flag = true;
+    return true;
+}
+
 int main()
 {
+    struct repeating_timer switch_timer;
+
     color_t red = hagl_color(255, 0, 0);
     color_t green = hagl_color(0, 255, 0);
     color_t blue = hagl_color(0, 0, 255);
@@ -56,12 +67,40 @@ int main()
     }
 
     hagl_clear_screen();
-    metaballs_init();
+
+    add_repeating_timer_ms(10000, switch_timer_callback, NULL, &switch_timer);
 
     while (1) {
-        metaballs_animate();
-        metaballs_render();
+
+        switch(effect) {
+        case 0:
+            metaballs_animate();
+            metaballs_render();
+            break;
+        case 1:
+            plasma_render();
+            break;
+        }
+
         hagl_flush();
+
+        if (switch_flag) {
+            switch_flag = false;
+            //printf("%s at %d FPS\r\n", demo[effect], (uint32_t)effect_fps);
+            effect = (effect + 1) % 2;
+
+            switch(effect) {
+            case 0:
+                metaballs_init();
+                printf("0\r\n");
+                break;
+            case 1:
+                plasma_init();
+                printf("1\r\n");
+                break;
+            }
+        }
+
     };
 
     return 0;
