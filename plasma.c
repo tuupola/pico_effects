@@ -34,8 +34,8 @@ SPDX-License-Identifier: MIT-0
 
 color_t palette[256];
 
-static const uint8_t SPEED = 4;
-static const uint8_t STEP = 1;
+static const uint8_t SPEED = 2;
+static const uint8_t STEP = 3;
 
 static inline int min(int a, int b) {
     if (a > b) {
@@ -133,13 +133,11 @@ void plasma_render()
             index += SPEED;
             index %= 256;
 
-            hagl_put_pixel(x, y, palette[index]);
-
-            // if (1 == STEP) {
-            //     hagl_put_pixel(x, y, palette[index]);
-            // } else {
-            //     hagl_fill_rectangle(x, y, x + STEP, y + STEP, palette[index]);
-            // }
+            if (1 == STEP) {
+                hagl_put_pixel(x, y, palette[index]);
+            } else {
+                hagl_fill_rectangle(x, y, x + STEP - 1, y + STEP - 1, palette[index]);
+            }
         }
     }
 }
