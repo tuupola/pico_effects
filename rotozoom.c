@@ -33,7 +33,7 @@ SPDX-License-Identifier: MIT-0
 #include "head.h"
 
 static const uint8_t SPEED = 2;
-static const uint8_t STEP = 1;
+static const uint8_t STEP = 2;
 
 static uint16_t angle = 0;
 // static float sinlut[360];
@@ -71,7 +71,11 @@ void rotozoom_render()
             }
             color_t *color = (color_t*) (head + HEAD_WIDTH * sizeof(color_t) * v + sizeof(color_t) * u);
 
-            hagl_put_pixel(x, y, *color);
+            if (1 == STEP) {
+                hagl_put_pixel(x, y, *color);
+            } else {
+                hagl_fill_rectangle(x, y, x + STEP - 1, y + STEP - 1, *color);
+            }
         }
     }
 }
