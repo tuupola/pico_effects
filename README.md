@@ -1,6 +1,6 @@
 ## Old schoold demo effects for Raspberry Pi Pico
 
-![Pico effects](https://appelsiini.net/img/2020/esp-effects.jpg)
+![Pico effects](https://appelsiini.net/img/2021/pico-rotozoom-low.gif)
 
 Created to test the [HAGL graphics library](https://github.com/tuupola/hagl). For quick reference see the [recording on Vimeo](https://vimeo.com/419551395).
 
