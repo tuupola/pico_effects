@@ -45,7 +45,8 @@ add_subdirectory(lib/hagl)
 add_subdirectory(lib/hagl_hal)
 
 target_compile_definitions(pico_effects PRIVATE
-  NO_MENUCONFIG=1
-  HAGL_HAL_USE_DOUBLE_BUFFER=1
+  NO_MENUCONFIG
+  HAGL_HAL_USE_DOUBLE_BUFFER
+  HAGL_HAL_DEBUG
 )
 
