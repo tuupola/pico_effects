@@ -18,7 +18,7 @@ $ make -j8
 If you are using macOS you can then "flash" by putting the Pico into `BOOTSEL` mode and copying the uf2 file.
 
 ```
-$ cp pico_effects.uf2 /Volumes/RPI-RP2
+$ cp firmware.uf2 /Volumes/RPI-RP2
 ```
 
 ## Run on computer
