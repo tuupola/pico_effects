@@ -75,7 +75,12 @@ int main()
     color_t green = hagl_color(0, 255, 0);
     color_t blue = hagl_color(0, 0, 255);
 
+    set_sys_clock_khz(133000, true);
+
     stdio_init_all();
+
+    /* Sleep so that we have time top open serial console. */
+    sleep_ms(5000);
 
     bb = hagl_init();
     if (bb) {
