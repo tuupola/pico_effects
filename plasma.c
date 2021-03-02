@@ -2,7 +2,7 @@
 
 MIT No Attribution
 
-Copyright (c) 2020-2021 Mika Tuupola
+Copyright (c) 2020 Mika Tuupola
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -32,76 +32,21 @@ SPDX-License-Identifier: MIT-0
 
 #include "plasma.h"
 
-color_t palette[256];
+static const uint8_t SPEED = 6;
+static const uint8_t STEP = 2;
 
-static const uint8_t SPEED = 2;
-static const uint8_t STEP = 3;
-
-static inline int min(int a, int b) {
-    if (a > b) {
-        return b;
-    };
-    return a;
-}
-
-static inline int max(int a, int b) {
-    if (a > b) {
-        return a;
-    }
-    return b;
-}
-
-uint16_t find_color(color_t color, uint16_t hint)
-{
-    uint8_t index;
-    uint16_t upper = min(256, hint + SPEED * 2);
-    uint16_t lower = max(0, hint - SPEED * 2);
-
-    index = upper;
-
-    /* Try to match close to previous match. */
-    while (index > lower) {
-        if (palette[index] == color) {
-            return index;
-        } else {
-            index--;
-        }
-    }
-
-    /* If not found search through whole palette. */
-    index = 0;
-    while (index < 255) {
-        if (palette[index] == color) {
-            return index;
-        } else {
-            index++;
-        }
-    }
-
-    return 0;
-}
+static uint8_t plasma[DISPLAY_WIDTH * DISPLAY_HEIGHT];
+static color_t palette[256];
 
 void plasma_init()
 {
-    /* Generate nice continous palette with unique colors. */
-    uint16_t index = 0;
-    uint16_t counter = 0;
-
-    while (index < 256) {
+    /* Generate nice continous palette. */
+    for(int i = 0; i < 256; i++) {
         uint8_t r, g, b;
-        counter++;
-        r = 128.0 + 128.0 * sin((M_PI * counter / 128.0) + 1);
-        g = 128.0 + 128.0 * sin((M_PI * counter / 64.0) + 1);
+        r = 128.0 + 128.0 * sin((M_PI * i / 128.0) + 1);
+        g = 128.0 + 128.0 * sin((M_PI * i / 64.0) + 1);
         b = 64;
-        color_t color = hagl_color(r, g, b);
-
-        if (0 == index) {
-            palette[index] = color;
-            index++;
-        } else if (palette[index - 1] != color) {
-            palette[index] = color;
-            index++;
-        }
+        palette[i] = hagl_color(r, g, b);
     }
 
     for (uint16_t x = 0; x < DISPLAY_WIDTH; x = x + STEP) {
@@ -113,31 +58,41 @@ void plasma_init()
                 /* Calculate average of the three sinusoids */
                 /* and use it as color. */
                 uint8_t color = (v1 + v2 + v3) / 3;
-                hagl_put_pixel(x, y, palette[color]);
+                uint8_t *ptr = (plasma + DISPLAY_WIDTH * y + x);
+                 *ptr = color;
         }
     }
 }
 
 void plasma_render()
 {
-    static uint16_t previous = 0;
     for (uint16_t x = 0; x < DISPLAY_WIDTH; x = x + STEP) {
         for (uint16_t y = 0; y < DISPLAY_HEIGHT; y = y + STEP) {
-
-            /* Find the pixels color index from the palette. */
-            color_t color = hagl_get_pixel(x, y);
-            uint16_t index = find_color(color, previous);
-            previous = index;
-
-            /* Animate by selecting next color from the palette. */
-            index += SPEED;
-            index %= 256;
-
+            /* Get a pixel from the plasma buffer. */
+            uint8_t *ptr = (plasma + x + DISPLAY_WIDTH * y);
+            color_t color = palette[*ptr];
+            /* Put a pixel to the display. */
             if (1 == STEP) {
-                hagl_put_pixel(x, y, palette[index]);
+                hagl_put_pixel(x, y, color);
             } else {
-                hagl_fill_rectangle(x, y, x + STEP - 1, y + STEP - 1, palette[index]);
+                hagl_fill_rectangle(x, y, x + STEP - 1, y + STEP - 1, color);
             }
+        }
+    }
+}
+
+void plasma_animate()
+{
+    for (uint16_t x = 0; x < DISPLAY_WIDTH; x = x + STEP) {
+        for (uint16_t y = 0; y < DISPLAY_HEIGHT; y = y + STEP) {
+                /* Get a pixel from the plasma buffer. */
+                uint8_t *ptr = (plasma + x + DISPLAY_WIDTH * y);
+                uint8_t color = *ptr;
+                /* Choose next color from the palette. */
+                color += SPEED;
+                color %= 256;
+                /* Put a pixel to the plasma buffer. */
+                *ptr = color;
         }
     }
 }

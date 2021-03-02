@@ -103,6 +103,7 @@ int main()
             metaballs_render();
             break;
         case 1:
+            plasma_animate();
             plasma_render();
             break;
         case 2:
@@ -115,6 +116,9 @@ int main()
         effect_fps = aps(1);
 
         if (switch_flag) {
+            /* Print the message in console. */
+            printf("%s at %d FPS\r\n", demo[effect], (uint32_t)effect_fps);
+
             switch_flag = false;
             effect = (effect + 1) % 3;
 
@@ -130,25 +134,22 @@ int main()
                 break;
             }
 
-            /* Print the message on top left corner. */
-            swprintf(message, sizeof(message), L"%s    ", demo[effect]);
-            hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
-            hagl_put_text(message, 4, 4, green, font6x9);
-            hagl_set_clip_window(0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
-
-            /* Print the message in console. */
-            printf("%s at %d FPS\r\n", demo[effect], (uint32_t)effect_fps);
-
             aps(APS_RESET);
         }
 
         if (fps_flag) {
             fps_flag = 0;
 
+            hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
+
             /* Print the message on lower right corner. */
             swprintf(message, sizeof(message), L"%.*f FPS  ", 0, effect_fps);
-            hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
             hagl_put_text(message, DISPLAY_WIDTH - 40, DISPLAY_HEIGHT - 14, green, font6x9);
+
+            /* Print the message on top left corner. */
+            swprintf(message, sizeof(message), L"%s    ", demo[effect]);
+            hagl_put_text(message, 4, 4, green, font6x9);
+
             hagl_set_clip_window(0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
         }
 
