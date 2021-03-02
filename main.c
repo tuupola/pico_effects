@@ -93,7 +93,7 @@ int main()
     hagl_set_clip_window(0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
 
     add_repeating_timer_ms(10000, switch_timer_callback, NULL, &switch_timer);
-    add_repeating_timer_ms(1000, fps_timer_callback, NULL, &fps_timer);
+    add_repeating_timer_ms(250, fps_timer_callback, NULL, &fps_timer);
 
     while (1) {
 
