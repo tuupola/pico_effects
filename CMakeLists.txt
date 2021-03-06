@@ -37,7 +37,6 @@ add_subdirectory(external/hagl)
 add_subdirectory(external/hagl_hal)
 
 target_compile_definitions(firmware PRIVATE
-  NO_MENUCONFIG
   #HAGL_HAL_USE_SINGLE_BUFFER
   #HAGL_HAL_USE_DOUBLE_BUFFER
   HAGL_HAL_USE_TRIPLE_BUFFER
@@ -45,3 +44,30 @@ target_compile_definitions(firmware PRIVATE
   HAGL_HAL_DEBUG
 )
 
+#
+# Example how to override HAGL HAL settings to make the display vertical.
+#
+
+#target_compile_definitions(firmware PRIVATE
+#  MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_SWAP_XY|MIPI_DCS_ADDRESS_MODE_MIRROR_Y
+#  MIPI_DISPLAY_WIDTH=240
+#  MIPI_DISPLAY_HEIGHT=135
+#  MIPI_DISPLAY_OFFSET_X=40
+#  MIPI_DISPLAY_OFFSET_Y=52
+#)
+
+#
+# Example how to override HAGL HAL settings for a 128x128 ILI9163 board.
+# https://www.aliexpress.com/item/32226457046.html
+#
+
+#target_compile_definitions(firmware PRIVATE
+#  MIPI_DISPLAY_PIN_RST=21
+#  MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_BGR
+#  MIPI_DISPLAY_WIDTH=128
+#  MIPI_DISPLAY_HEIGHT=128
+#  MIPI_DISPLAY_DEPTH=16
+#  MIPI_DISPLAY_OFFSET_X=0
+#  MIPI_DISPLAY_OFFSET_Y=0
+#  MIPI_DISPLAY_INVERT=0
+#)
