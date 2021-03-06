@@ -35,7 +35,6 @@ SPDX-License-Identifier: MIT-0
 #include <hagl_hal.h>
 #include <hagl.h>
 #include <font6x9.h>
-#include <fps.h>
 #include <aps.h>
 
 #include "metaballs.h"
@@ -112,6 +111,8 @@ int main()
         /* Flush back buffer contents to display if double or triple */
         /* buffering. NOP if using single buffering. */
         hagl_flush();
+
+        /* We use aps() instead of fps() because former can be reset. */
         effect_fps = aps(1);
 
         /* When switch flag is set change the demo effect. */
@@ -134,7 +135,7 @@ int main()
                 break;
             }
 
-            /* Reset the anythin per second counter. */
+            /* Reset the anything per second counter. */
             aps(APS_RESET);
         }
 
