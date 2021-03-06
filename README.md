@@ -2,7 +2,7 @@
 
 ![Pico effects](https://appelsiini.net/img/2021/pico-rotozoom.png)
 
-Created to test the [HAGL graphics library](https://github.com/tuupola/hagl). For quick reference see the [recording on Vimeo](https://vimeo.com/510236080).
+Created to test the [HAGL graphics library](https://github.com/tuupola/hagl). For quick reference see the [recording on Vimeo](https://vimeo.com/510236080). If you cannot compile yourself build directory contains a [recent firmware](https://github.com/tuupola/pico_effects/raw/master/build/firmware.uf2).
 
 ## Compile
 
