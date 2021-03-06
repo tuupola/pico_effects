@@ -76,23 +76,20 @@ int main()
     color_t blue = hagl_color(0, 0, 255);
 
     set_sys_clock_khz(133000, true);
-
     stdio_init_all();
 
     /* Sleep so that we have time top open serial console. */
     sleep_ms(5000);
 
-    bb = hagl_init();
-    if (bb) {
-        printf("Back buffer: %dx%dx%d\r\n", bb->width, bb->height, bb->depth);
-    } else {
-        printf("No back buffer\r\n");
-    }
+    hagl_init();
 
     hagl_clear_screen();
     hagl_set_clip_window(0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
 
+    /* Change demo every 10 seconds. */
     add_repeating_timer_ms(10000, switch_timer_callback, NULL, &switch_timer);
+
+    /* Update displayed FPS counter every 250 ms. */
     add_repeating_timer_ms(250, fps_timer_callback, NULL, &fps_timer);
 
     while (1) {
@@ -112,9 +109,12 @@ int main()
             break;
         }
 
+        /* Flush back buffer contents to display if double or triple */
+        /* buffering. NOP if using single buffering. */
         hagl_flush();
         effect_fps = aps(1);
 
+        /* When switch flag is set change the demo effect. */
         if (switch_flag) {
             /* Print the message in console. */
             printf("%s at %d FPS\r\n", demo[effect], (uint32_t)effect_fps);
@@ -134,12 +134,15 @@ int main()
                 break;
             }
 
+            /* Reset the anythin per second counter. */
             aps(APS_RESET);
         }
 
+        /* When fps flag is set update the displayed fps counter. */
         if (fps_flag) {
             fps_flag = 0;
 
+            /* Set clip window to full screen so we can display the messages. */
             hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
 
             /* Print the message on lower right corner. */
@@ -150,6 +153,7 @@ int main()
             swprintf(message, sizeof(message), L"%s    ", demo[effect]);
             hagl_put_text(message, 4, 4, green, font6x9);
 
+            /* Set clip window back to smaller so effects do not mess the messages. */
             hagl_set_clip_window(0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
         }
 
