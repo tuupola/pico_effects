@@ -167,7 +167,7 @@ int main()
         }
 
         /* Cap the demos to 60 fps. This is mostly to accommodate to smaller */
-        /* screens which will run over 100 fps making the demos too fast. */
+        /* screens where plasma will run too fast. */
         busy_wait_until(start + US_PER_FRAME_60_FPS);
     };
 
