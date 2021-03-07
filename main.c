@@ -60,19 +60,55 @@ bool switch_timer_callback(struct repeating_timer *t) {
     return true;
 }
 
-bool fps_timer_callback(struct repeating_timer *t) {
+bool show_timer_callback(struct repeating_timer *t) {
     fps_flag = true;
     return true;
+}
+
+void static inline switch_demo() {
+    switch_flag = false;
+    effect = (effect + 1) % 3;
+
+    switch(effect) {
+    case 0:
+        metaballs_init();
+        break;
+    case 1:
+        plasma_init();
+        break;
+    case 2:
+        rotozoom_init();
+        break;
+    }
+
+    /* Reset the anything per second counter. */
+    aps(APS_RESET);
+}
+
+void static inline show_fps() {
+    color_t green = hagl_color(0, 255, 0);
+
+    fps_flag = 0;
+
+    /* Set clip window to full screen so we can display the messages. */
+    hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
+
+    /* Print the message on lower right corner. */
+    swprintf(message, sizeof(message), L"%.*f FPS  ", 0, effect_fps);
+    hagl_put_text(message, DISPLAY_WIDTH - 40, DISPLAY_HEIGHT - 14, green, font6x9);
+
+    /* Print the message on top left corner. */
+    swprintf(message, sizeof(message), L"%s    ", demo[effect]);
+    hagl_put_text(message, 4, 4, green, font6x9);
+
+    /* Set clip window back to smaller so effects do not mess the messages. */
+    hagl_set_clip_window(0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
 }
 
 int main()
 {
     struct repeating_timer switch_timer;
-    struct repeating_timer fps_timer;
-
-    color_t red = hagl_color(255, 0, 0);
-    color_t green = hagl_color(0, 255, 0);
-    color_t blue = hagl_color(0, 0, 255);
+    struct repeating_timer show_timer;
 
     set_sys_clock_khz(133000, true);
     stdio_init_all();
@@ -81,7 +117,6 @@ int main()
     sleep_ms(5000);
 
     hagl_init();
-
     hagl_clear_screen();
     hagl_set_clip_window(0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
 
@@ -89,7 +124,7 @@ int main()
     add_repeating_timer_ms(10000, switch_timer_callback, NULL, &switch_timer);
 
     /* Update displayed FPS counter every 250 ms. */
-    add_repeating_timer_ms(250, fps_timer_callback, NULL, &fps_timer);
+    add_repeating_timer_ms(250, show_timer_callback, NULL, &show_timer);
 
     while (1) {
 
@@ -108,56 +143,22 @@ int main()
             break;
         }
 
-        /* Flush back buffer contents to display if double or triple */
-        /* buffering. NOP if using single buffering. */
+        /* Update the displayed fps if requested. */
+        if (fps_flag) {
+            show_fps();
+        }
+
+        /* Flush back buffer contents to display. NOP if single buffering. */
         hagl_flush();
 
         /* We use aps() instead of fps() because former can be reset. */
         effect_fps = aps(1);
 
-        /* When switch flag is set change the demo effect. */
+        /* Print the message in console and switch to next demo. */
         if (switch_flag) {
-            /* Print the message in console. */
             printf("%s at %d FPS\r\n", demo[effect], (uint32_t)effect_fps);
-
-            switch_flag = false;
-            effect = (effect + 1) % 3;
-
-            switch(effect) {
-            case 0:
-                metaballs_init();
-                break;
-            case 1:
-                plasma_init();
-                break;
-            case 2:
-                rotozoom_init();
-                break;
-            }
-
-            /* Reset the anything per second counter. */
-            aps(APS_RESET);
+            switch_demo();
         }
-
-        /* When fps flag is set update the displayed fps counter. */
-        if (fps_flag) {
-            fps_flag = 0;
-
-            /* Set clip window to full screen so we can display the messages. */
-            hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
-
-            /* Print the message on lower right corner. */
-            swprintf(message, sizeof(message), L"%.*f FPS  ", 0, effect_fps);
-            hagl_put_text(message, DISPLAY_WIDTH - 40, DISPLAY_HEIGHT - 14, green, font6x9);
-
-            /* Print the message on top left corner. */
-            swprintf(message, sizeof(message), L"%s    ", demo[effect]);
-            hagl_put_text(message, 4, 4, green, font6x9);
-
-            /* Set clip window back to smaller so effects do not mess the messages. */
-            hagl_set_clip_window(0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
-        }
-
     };
 
     return 0;
