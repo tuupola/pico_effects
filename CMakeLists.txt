@@ -37,6 +37,7 @@ add_subdirectory(external/hagl)
 add_subdirectory(external/hagl_hal)
 
 target_compile_definitions(firmware PRIVATE
+  NDEBUG
   #HAGL_HAL_USE_SINGLE_BUFFER
   #HAGL_HAL_USE_DOUBLE_BUFFER
   HAGL_HAL_USE_TRIPLE_BUFFER
