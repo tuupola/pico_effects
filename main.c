@@ -49,6 +49,10 @@ static float effect_fps;
 static bitmap_t *bb;
 wchar_t message[32];
 
+static const uint64_t US_PER_FRAME_60_FPS = 1000000 / 60;
+static const uint64_t US_PER_FRAME_30_FPS = 1000000 / 30;
+static const uint64_t US_PER_FRAME_25_FPS = 1000000 / 25;
+
 static char demo[3][32] = {
     "METABALLS",
     "PLASMA",
@@ -128,6 +132,8 @@ int main()
 
     while (1) {
 
+        uint64_t start = time_us_64();
+
         switch(effect) {
         case 0:
             metaballs_animate();
@@ -159,6 +165,10 @@ int main()
             printf("%s at %d FPS\r\n", demo[effect], (uint32_t)effect_fps);
             switch_demo();
         }
+
+        /* Cap the demos to 60 fps. This is mostly to accommodate to smaller */
+        /* screens which will run over 100 fps making the demos too fast. */
+        busy_wait_until(start + US_PER_FRAME_60_FPS);
     };
 
     return 0;
