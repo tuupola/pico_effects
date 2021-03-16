@@ -35,6 +35,7 @@ SPDX-License-Identifier: MIT-0
 #include <hagl_hal.h>
 #include <hagl.h>
 #include <font6x9.h>
+#include <fps.h>
 #include <aps.h>
 
 #include "metaballs.h"
@@ -45,6 +46,7 @@ static uint8_t effect = 1;
 volatile bool fps_flag = false;
 volatile bool switch_flag = true;
 static float effect_fps;
+static float display_bps;
 
 static bitmap_t *bb;
 wchar_t message[32];
@@ -84,9 +86,6 @@ void static inline switch_demo() {
         rotozoom_init();
         break;
     }
-
-    /* Reset the anything per second counter. */
-    aps(APS_RESET);
 }
 
 void static inline show_fps() {
@@ -97,13 +96,17 @@ void static inline show_fps() {
     /* Set clip window to full screen so we can display the messages. */
     hagl_set_clip_window(0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
 
-    /* Print the message on lower right corner. */
-    swprintf(message, sizeof(message), L"%.*f FPS  ", 0, effect_fps);
-    hagl_put_text(message, DISPLAY_WIDTH - 40, DISPLAY_HEIGHT - 14, green, font6x9);
-
     /* Print the message on top left corner. */
     swprintf(message, sizeof(message), L"%s    ", demo[effect]);
     hagl_put_text(message, 4, 4, green, font6x9);
+
+    /* Print the message on lower left corner. */
+    swprintf(message, sizeof(message), L"%.*f FPS  ", 0, effect_fps);
+    hagl_put_text(message, 4, DISPLAY_HEIGHT - 14, green, font6x9);
+
+    /* Print the message on lower right corner. */
+    swprintf(message, sizeof(message), L"%.*f KBPS  ", 0, display_bps / 1000);
+    hagl_put_text(message, DISPLAY_WIDTH - 60, DISPLAY_HEIGHT - 14, green, font6x9);
 
     /* Set clip window back to smaller so effects do not mess the messages. */
     hagl_set_clip_window(0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
@@ -111,6 +114,7 @@ void static inline show_fps() {
 
 int main()
 {
+    size_t bytes = 0;
     struct repeating_timer switch_timer;
     struct repeating_timer show_timer;
 
@@ -155,15 +159,16 @@ int main()
         }
 
         /* Flush back buffer contents to display. NOP if single buffering. */
-        hagl_flush();
+        bytes = hagl_flush();
 
-        /* We use aps() instead of fps() because former can be reset. */
-        effect_fps = aps(1);
+        display_bps = aps(bytes);
+        effect_fps = fps();
 
         /* Print the message in console and switch to next demo. */
         if (switch_flag) {
-            printf("%s at %d FPS\r\n", demo[effect], (uint32_t)effect_fps);
+            printf("%s at %d fps / %d kBps\r\n", demo[effect], (uint32_t)effect_fps, (uint32_t)(display_bps / 1000));
             switch_demo();
+            aps(APS_RESET);
         }
 
         /* Cap the demos to 60 fps. This is mostly to accommodate to smaller */
