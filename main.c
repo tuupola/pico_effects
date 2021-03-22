@@ -163,8 +163,6 @@ int main()
     /* Update displayed FPS counter every 250 ms. */
     add_repeating_timer_ms(250, show_timer_callback, NULL, &show_timer);
 
-    //metaballs_init();
-
     while (1) {
 
         uint64_t start = time_us_64();
