@@ -41,8 +41,9 @@ SPDX-License-Identifier: MIT-0
 #include "metaballs.h"
 #include "plasma.h"
 #include "rotozoom.h"
+#include "deform.h"
 
-static uint8_t effect = 1;
+static uint8_t effect = 0;
 volatile bool fps_flag = false;
 volatile bool switch_flag = true;
 static float effect_fps;
@@ -55,10 +56,11 @@ static const uint64_t US_PER_FRAME_60_FPS = 1000000 / 60;
 static const uint64_t US_PER_FRAME_30_FPS = 1000000 / 30;
 static const uint64_t US_PER_FRAME_25_FPS = 1000000 / 25;
 
-static char demo[3][32] = {
+static char demo[4][32] = {
     "METABALLS",
     "PLASMA",
     "ROTOZOOM",
+    "DEFORM",
 };
 
 bool switch_timer_callback(struct repeating_timer *t) {
@@ -73,17 +75,44 @@ bool show_timer_callback(struct repeating_timer *t) {
 
 void static inline switch_demo() {
     switch_flag = false;
-    effect = (effect + 1) % 3;
 
     switch(effect) {
     case 0:
+        printf("Closing metaballs.\n");
+        //metaballs_close();
+        break;
+    case 1:
+        printf("Closing plasma.\n");
+        plasma_close();
+        break;
+    case 2:
+        printf("Closing rotozoom.\n");
+        //rotozoom_close();
+        break;
+    case 3:
+        printf("Closing deform.\n");
+        deform_close();
+        break;
+    }
+
+    effect = (effect + 1) % 4;
+
+    switch(effect) {
+    case 0:
+        printf("Initialising metaballs.\n");
         metaballs_init();
         break;
     case 1:
+        printf("Initialising plasma.\n");
         plasma_init();
         break;
     case 2:
+        printf("Initialising rotozoom.\n");
         rotozoom_init();
+        break;
+    case 3:
+        printf("Initialising deform.\n");
+        deform_init();
         break;
     }
 }
@@ -150,6 +179,10 @@ int main()
         case 2:
             rotozoom_animate();
             rotozoom_render();
+            break;
+        case 3:
+            deform_animate();
+            deform_render();
             break;
         }
 
