@@ -9,7 +9,7 @@ Created to test the [HAGL graphics library](https://github.com/tuupola/hagl). Fo
 Below instructions assume you have [Raspberry Pi Pico SDK](https://github.com/raspberrypi/pico-sdk) installed and `PICO_SDK_PATH` environment correctly set up.
 
 ```
-$ git clone --recursive git@github.com:tuupola/pico_effects.git
+$ git clone --recursive https://github.com/tuupola/pico_effects.git
 $ cd pico_effects/build
 $ cmake ..
 $ make -j8
