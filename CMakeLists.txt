@@ -37,7 +37,6 @@ add_subdirectory(external/hagl)
 add_subdirectory(external/hagl_hal)
 
 target_compile_definitions(firmware PRIVATE
-  NDEBUG
   #HAGL_HAL_USE_SINGLE_BUFFER
   #HAGL_HAL_USE_DOUBLE_BUFFER
   HAGL_HAL_USE_TRIPLE_BUFFER
@@ -46,7 +45,7 @@ target_compile_definitions(firmware PRIVATE
 )
 
 #
-# Example how to override HAGL HAL settings to make the display vertical.
+# Example how to override default HAGL HAL settings to make the display vertical.
 #
 
 #target_compile_definitions(firmware PRIVATE
@@ -58,7 +57,7 @@ target_compile_definitions(firmware PRIVATE
 #)
 
 #
-# Example how to override HAGL HAL settings for a 128x128 ILI9163 board.
+# Example how to override default HAGL HAL settings for a 128x128 ILI9163 board.
 # https://www.aliexpress.com/item/32226457046.html
 #
 
@@ -67,7 +66,49 @@ target_compile_definitions(firmware PRIVATE
 #  MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_BGR
 #  MIPI_DISPLAY_WIDTH=128
 #  MIPI_DISPLAY_HEIGHT=128
-#  MIPI_DISPLAY_DEPTH=16
+#  MIPI_DISPLAY_OFFSET_X=0
+#  MIPI_DISPLAY_OFFSET_Y=0
+#  MIPI_DISPLAY_INVERT=0
+#)
+
+#
+# Example of full HAGL HAL settings for a 128x128 ST7735S board.
+# https://www.aliexpress.com/item/4000219159401.html
+#
+
+#target_compile_definitions(firmware PRIVATE
+#  MIPI_DISPLAY_PIN_CS=17
+#  MIPI_DISPLAY_PIN_DC=16 # A0
+#  MIPI_DISPLAY_PIN_RST=21
+#  MIPI_DISPLAY_PIN_BL=20
+#  MIPI_DISPLAY_PIN_CLK=18
+#  MIPI_DISPLAY_PIN_MOSI=19 # SDA
+#  MIPI_DISPLAY_PIN_MISO=-1
+#  MIPI_DISPLAY_PIXEL_FORMAT=MIPI_DCS_PIXEL_FORMAT_16BIT
+#  MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_BGR
+#  MIPI_DISPLAY_WIDTH=128
+#  MIPI_DISPLAY_HEIGHT=128
+#  MIPI_DISPLAY_OFFSET_X=2
+#  MIPI_DISPLAY_OFFSET_Y=1
+#  MIPI_DISPLAY_INVERT=0
+#)
+
+#
+# Example of full HAGL HAL settings for a 320x240 ILI9341 board.
+#
+
+#target_compile_definitions(firmware PRIVATE
+#  MIPI_DISPLAY_PIN_CS=17
+#  MIPI_DISPLAY_PIN_DC=16
+#  MIPI_DISPLAY_PIN_RST=21
+#  MIPI_DISPLAY_PIN_BL=20
+#  MIPI_DISPLAY_PIN_CLK=18
+#  MIPI_DISPLAY_PIN_MOSI=19
+#  MIPI_DISPLAY_PIN_MISO=-1
+#  MIPI_DISPLAY_PIXEL_FORMAT=MIPI_DCS_PIXEL_FORMAT_16BIT
+#  MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_BGR|MIPI_DCS_ADDRESS_MODE_SWAP_XY
+#  MIPI_DISPLAY_WIDTH=320
+#  MIPI_DISPLAY_HEIGHT=240
 #  MIPI_DISPLAY_OFFSET_X=0
 #  MIPI_DISPLAY_OFFSET_Y=0
 #  MIPI_DISPLAY_INVERT=0
