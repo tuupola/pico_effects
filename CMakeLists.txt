@@ -11,7 +11,7 @@ project(firmware C CXX ASM)
 
 pico_sdk_init()
 
-add_executable(firmware main.c metaballs.c plasma.c rotozoom.c deform.c clock.c)
+add_executable(firmware main.c metaballs.c plasma.c rotozoom.c deform.c)
 
 pico_set_program_name(firmware "Pico Effects")
 pico_set_program_version(firmware "0.1")
