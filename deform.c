@@ -96,7 +96,7 @@ void deform_init()
     }
 }
 
-void deform_render(hagl_surface_t *surface)
+void deform_render(hagl_surface_t const *surface)
 {
     int8_t *ptr = lut;
 

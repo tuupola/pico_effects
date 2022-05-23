@@ -38,7 +38,7 @@ uint8_t *plasma;
 static const uint8_t SPEED = 4;
 static const uint8_t PIXEL_SIZE = 2;
 
-void plasma_init(hagl_surface_t *surface)
+void plasma_init(hagl_surface_t const *surface)
 {
     uint8_t *ptr = plasma = malloc(DISPLAY_WIDTH * DISPLAY_HEIGHT * sizeof(uint8_t));
     palette = malloc(256 * sizeof(color_t));
@@ -65,7 +65,7 @@ void plasma_init(hagl_surface_t *surface)
     }
 }
 
-void plasma_render(hagl_surface_t *surface)
+void plasma_render(hagl_surface_t const *surface)
 {
     uint8_t *ptr = plasma;
 

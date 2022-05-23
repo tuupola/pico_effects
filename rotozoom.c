@@ -47,7 +47,7 @@ void rotozoom_init()
     // }
 }
 
-void rotozoom_render(hagl_surface_t *surface)
+void rotozoom_render(hagl_surface_t const *surface)
 {
     float s, c, z;
 

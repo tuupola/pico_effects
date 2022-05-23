@@ -27,4 +27,4 @@ SPDX-License-Identifier: MIT-0
 
 void metaballs_init();
 void metaballs_animate();
-void metaballs_render();
+void metaballs_render(hagl_surface_t const *surface);
