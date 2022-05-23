@@ -29,6 +29,7 @@ SPDX-License-Identifier: MIT-0
 #include <stdio.h>
 #include <wchar.h>
 #include <pico/stdlib.h>
+#include <hardware/clocks.h>
 
 #include <sys/time.h>
 
@@ -43,14 +44,14 @@ SPDX-License-Identifier: MIT-0
 #include "rotozoom.h"
 #include "deform.h"
 
-static uint8_t effect = 1;
+static uint8_t effect = 0;
 volatile bool fps_flag = false;
 volatile bool switch_flag = true;
 static float effect_fps;
 static float display_bps;
 
 static bitmap_t *bb;
-static hagl_backend_t *backend;
+static const hagl_backend_t *backend;
 static hagl_surface_t *display;
 
 wchar_t message[32];
@@ -151,6 +152,14 @@ int main()
     struct repeating_timer show_timer;
 
     set_sys_clock_khz(133000, true);
+    clock_configure(
+        clk_peri,
+        0,
+        CLOCKS_CLK_PERI_CTRL_AUXSRC_VALUE_CLKSRC_PLL_SYS,
+        133000 * 1000,
+        133000 * 1000
+    );
+
     stdio_init_all();
 
     /* Sleep so that we have time top open serial console. */
