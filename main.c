@@ -25,6 +25,7 @@ SPDX-License-Identifier: MIT-0
 
 */
 
+#include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <wchar.h>
@@ -47,12 +48,12 @@ SPDX-License-Identifier: MIT-0
 static uint8_t effect = 0;
 volatile bool fps_flag = false;
 volatile bool switch_flag = true;
-static float effect_fps;
-static float display_bps;
+static fps_instance_t fps;
+static aps_instance_t bps;
 
-static bitmap_t *bb;
-static const hagl_backend_t *backend;
-static hagl_surface_t *display;
+static uint8_t *buffer;
+static hagl_backend_t backend;
+static hagl_backend_t *display;
 
 wchar_t message[32];
 
@@ -119,6 +120,9 @@ void static inline switch_demo() {
         deform_init();
         break;
     }
+
+    fps_init(&fps);
+    aps_init(&bps);
 }
 
 void static inline show_fps() {
@@ -134,11 +138,11 @@ void static inline show_fps() {
     hagl_put_text(display, message, 4, 4, green, font6x9);
 
     /* Print the message on lower left corner. */
-    swprintf(message, sizeof(message), L"%.*f FPS  ", 0, effect_fps);
+    swprintf(message, sizeof(message), L"%.*f FPS  ", 0, fps.current);
     hagl_put_text(display, message, 4, DISPLAY_HEIGHT - 14, green, font6x9);
 
     /* Print the message on lower right corner. */
-    swprintf(message, sizeof(message), L"%.*f KBPS  ", 0, display_bps / 1000);
+    swprintf(message, sizeof(message), L"%.*f KBPS  ", 0, bps.current / 1024);
     hagl_put_text(display, message, DISPLAY_WIDTH - 60, DISPLAY_HEIGHT - 14, green, font6x9);
 
     /* Set clip window back to smaller so effects do not mess the messages. */
@@ -162,11 +166,23 @@ int main()
 
     stdio_init_all();
 
-    /* Sleep so that we have time top open serial console. */
+    /* Sleep so that we have time to open the serial console. */
     sleep_ms(5000);
 
-    backend = hagl_hal_init();
-    display = hagl_init(backend);
+    fps_init(&fps);
+
+    // memset(&backend, 0, sizeof(hagl_backend_t));
+    // backend.buffer = malloc(MIPI_DISPLAY_WIDTH * MIPI_DISPLAY_HEIGHT * (DISPLAY_DEPTH / 8));
+    // backend.buffer2 = malloc(MIPI_DISPLAY_WIDTH * MIPI_DISPLAY_HEIGHT * (DISPLAY_DEPTH / 8));
+    // hagl_hal_init(&backend);
+    // display = &backend;
+
+    // memset(&backend, 0, sizeof(hagl_backend_t));
+    // backend.buffer = malloc(MIPI_DISPLAY_WIDTH * MIPI_DISPLAY_HEIGHT * (DISPLAY_DEPTH / 8));
+    // hagl_hal_init(&backend);
+    // display = &backend;
+
+    display = hagl_init();
 
     hagl_clear_screen(display);
     hagl_set_clip_window(display, 0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
@@ -206,16 +222,15 @@ int main()
         }
 
         /* Flush back buffer contents to display. NOP if single buffering. */
-        bytes = hagl_flush(backend);
+        bytes = hagl_flush(display);
 
-        display_bps = aps(bytes);
-        effect_fps = fps();
+        aps_update(&bps, bytes);
+        fps_update(&fps);
 
         /* Print the message in console and switch to next demo. */
         if (switch_flag) {
-            printf("%s at %d fps / %d kBps\r\n", demo[effect], (uint32_t)effect_fps, (uint32_t)(display_bps / 1000));
+            printf("%s at %d fps / %d kBps\r\n", demo[effect], (uint32_t)fps.current, (uint32_t)(bps.current / 1024));
             switch_demo();
-            aps(APS_RESET);
         }
 
         /* Cap the demos to 60 fps. This is mostly to accommodate to smaller */
