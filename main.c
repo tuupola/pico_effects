@@ -184,7 +184,7 @@ int main()
 
     display = hagl_init();
 
-    hagl_clear_screen(display);
+    hagl_clear(display);
     hagl_set_clip_window(display, 0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
 
     /* Change demo every 10 seconds. */
