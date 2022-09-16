@@ -37,6 +37,12 @@ If you are using macOS the command would be the following.
 $ cp firmware.uf2 /Volumes/RPI-RP2
 ```
 
+Alternatively you can use picotool to flash the firmware.
+
+```
+$ picotool load firmware.uf2 -f
+```
+
 ## Run on computer
 
 HAGL is hardware agnostic. You can run the demos also [on your computer](https://github.com/tuupola/sdl2_effects).
