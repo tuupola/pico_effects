@@ -40,80 +40,44 @@ add_subdirectory(external/hagl)
 add_subdirectory(external/hagl_hal)
 
 target_compile_definitions(firmware PRIVATE
-  #HAGL_HAL_USE_SINGLE_BUFFER
-  #HAGL_HAL_USE_DOUBLE_BUFFER
-  HAGL_HAL_USE_TRIPLE_BUFFER
+#  HAGL_HAL_USE_SINGLE_BUFFER
+  HAGL_HAL_USE_DOUBLE_BUFFER
+#  HAGL_HAL_USE_TRIPLE_BUFFER
   HAGL_HAL_USE_DMA
   HAGL_HAL_DEBUG
-  MIPI_DISPLAY_SPI_CLOCK_SPEED_HZ=68000000
 )
 
 #
-# Example how to override default HAGL HAL settings to make the display vertical.
+# There are ready made config files for popular Pico displays.
 #
 
-#target_compile_definitions(firmware PRIVATE
-#  MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_SWAP_XY|MIPI_DCS_ADDRESS_MODE_MIRROR_Y
-#  MIPI_DISPLAY_WIDTH=240
-#  MIPI_DISPLAY_HEIGHT=135
-#  MIPI_DISPLAY_OFFSET_X=40
-#  MIPI_DISPLAY_OFFSET_Y=52
-#)
+include("external/hagl_hal/cmake/pimoroni-pico-display-pack.cmake")
+#include("external/hagl_hal/cmake/waveshare-pico-lcd-096.cmake")
+#include("external/hagl_hal/cmake/waveshare-pico-lcd-130.cmake")
+#include("external/hagl_hal/cmake/waveshare-pico-lcd-144.cmake")
+#include("external/hagl_hal/cmake/waveshare-rp2040-lcd-096.cmake")
 
 #
-# Example how to override default HAGL HAL settings for a 128x128 ILI9163 board.
-# https://www.aliexpress.com/item/32226457046.html
+# For other boards you can set the config manually here.
 #
 
-#target_compile_definitions(firmware PRIVATE
-#  MIPI_DISPLAY_PIN_RST=21
-#  MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_BGR
-#  MIPI_DISPLAY_WIDTH=128
-#  MIPI_DISPLAY_HEIGHT=128
-#  MIPI_DISPLAY_OFFSET_X=0
-#  MIPI_DISPLAY_OFFSET_Y=0
-#  MIPI_DISPLAY_INVERT=0
-#)
+# target_compile_definitions(firmware PRIVATE
+#     MIPI_DISPLAY_PIN_CS=9
+#     MIPI_DISPLAY_PIN_DC=8
+#     MIPI_DISPLAY_PIN_RST=12
+#     MIPI_DISPLAY_PIN_BL=13
+#     MIPI_DISPLAY_PIN_CLK=10
+#     MIPI_DISPLAY_PIN_MOSI=11
+#     MIPI_DISPLAY_PIN_MISO=-1
 
-#
-# Example of full HAGL HAL settings for a 128x128 ST7735S board.
-# https://www.aliexpress.com/item/4000219159401.html
-#
+#     MIPI_DISPLAY_SPI_PORT=spi1
+#     MIPI_DISPLAY_SPI_CLOCK_SPEED_HZ=68000000
 
-#target_compile_definitions(firmware PRIVATE
-#  MIPI_DISPLAY_PIN_CS=17
-#  MIPI_DISPLAY_PIN_DC=16 # A0
-#  MIPI_DISPLAY_PIN_RST=21
-#  MIPI_DISPLAY_PIN_BL=20
-#  MIPI_DISPLAY_PIN_CLK=18
-#  MIPI_DISPLAY_PIN_MOSI=19 # SDA
-#  MIPI_DISPLAY_PIN_MISO=-1
-#  MIPI_DISPLAY_PIXEL_FORMAT=MIPI_DCS_PIXEL_FORMAT_16BIT
-#  MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_BGR
-#  MIPI_DISPLAY_WIDTH=128
-#  MIPI_DISPLAY_HEIGHT=128
-#  MIPI_DISPLAY_OFFSET_X=2
-#  MIPI_DISPLAY_OFFSET_Y=1
-#  MIPI_DISPLAY_INVERT=0
-#)
-
-#
-# Example of full HAGL HAL settings for a 320x240 ILI9341 board.
-#
-
-#target_compile_definitions(firmware PRIVATE
-#  MIPI_DISPLAY_PIN_CS=17
-#  MIPI_DISPLAY_PIN_DC=16
-#  MIPI_DISPLAY_PIN_RST=21
-#  MIPI_DISPLAY_PIN_BL=20
-#  MIPI_DISPLAY_PIN_CLK=18
-#  MIPI_DISPLAY_PIN_MOSI=19
-#  MIPI_DISPLAY_PIN_MISO=-1
-#  MIPI_DISPLAY_PIXEL_FORMAT=MIPI_DCS_PIXEL_FORMAT_16BIT
-#  MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_BGR|MIPI_DCS_ADDRESS_MODE_SWAP_XY
-#  MIPI_DISPLAY_WIDTH=320
-#  MIPI_DISPLAY_HEIGHT=240
-#  MIPI_DISPLAY_OFFSET_X=0
-#  MIPI_DISPLAY_OFFSET_Y=0
-#  MIPI_DISPLAY_INVERT=0
-#)
+#     MIPI_DISPLAY_PIXEL_FORMAT=MIPI_DCS_PIXEL_FORMAT_16BIT
+#     MIPI_DISPLAY_ADDRESS_MODE=MIPI_DCS_ADDRESS_MODE_RGB
+#     MIPI_DISPLAY_WIDTH=240
+#     MIPI_DISPLAY_HEIGHT=240
+#     MIPI_DISPLAY_OFFSET_X=0
+#     MIPI_DISPLAY_OFFSET_Y=0
+#     MIPI_DISPLAY_INVERT=1
+# )
