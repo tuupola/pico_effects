@@ -52,6 +52,7 @@ target_compile_definitions(firmware PRIVATE
 #
 
 include("external/hagl_hal/cmake/pimoroni-pico-display-pack.cmake")
+#include("external/hagl_hal/cmake/pimoroni-picosystem.cmake")
 #include("external/hagl_hal/cmake/waveshare-pico-lcd-096.cmake")
 #include("external/hagl_hal/cmake/waveshare-pico-lcd-130.cmake")
 #include("external/hagl_hal/cmake/waveshare-pico-lcd-144.cmake")
