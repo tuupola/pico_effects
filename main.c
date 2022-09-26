@@ -155,14 +155,14 @@ int main()
     struct repeating_timer switch_timer;
     struct repeating_timer show_timer;
 
-    set_sys_clock_khz(133000, true);
-    clock_configure(
-        clk_peri,
-        0,
-        CLOCKS_CLK_PERI_CTRL_AUXSRC_VALUE_CLKSRC_PLL_SYS,
-        133000 * 1000,
-        133000 * 1000
-    );
+    // set_sys_clock_khz(133000, true);
+    // clock_configure(
+    //     clk_peri,
+    //     0,
+    //     CLOCKS_CLK_PERI_CTRL_AUXSRC_VALUE_CLKSRC_PLL_SYS,
+    //     133000 * 1000,
+    //     133000 * 1000
+    // );
 
     stdio_init_all();
 
