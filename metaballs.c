@@ -52,32 +52,32 @@ static const uint8_t MIN_RADIUS = 22;
 static const uint8_t MAX_RADIUS = 32;
 static const uint8_t PIXEL_SIZE = 2;
 
-void metaballs_init()
+void metaballs_init(hagl_backend_t const *display)
 {
     /* Set up imaginary balls inside screen coordinates. */
     for (int16_t i = 0; i < NUM_BALLS; i++) {
         balls[i].radius = (rand() % MAX_RADIUS) + MIN_RADIUS;
         balls[i].color = 0xffff;
-        balls[i].position.x = rand() % DISPLAY_WIDTH;
-        balls[i].position.y = rand() % DISPLAY_HEIGHT;
+        balls[i].position.x = rand() % display->width;
+        balls[i].position.y = rand() % display->height;
         balls[i].velocity.x = (rand() % MAX_VELOCITY) + MIN_VELOCITY;
         balls[i].velocity.y = (rand() % MAX_VELOCITY) + MIN_VELOCITY;
     }
 }
 
-void metaballs_animate()
+void metaballs_animate(hagl_backend_t const *display)
 {
     for (int16_t i = 0; i < NUM_BALLS; i++) {
         balls[i].position.x += balls[i].velocity.x;
         balls[i].position.y += balls[i].velocity.y;
 
         /* Touch left or right edge, change direction. */
-        if ((balls[i].position.x < 0) | (balls[i].position.x > DISPLAY_WIDTH)) {
+        if ((balls[i].position.x < 0) | (balls[i].position.x > display->width)) {
             balls[i].velocity.x = balls[i].velocity.x * -1;
         }
 
         /* Touch top or bottom edge, change direction. */
-        if ((balls[i].position.y < 0) | (balls[i].position.y > DISPLAY_HEIGHT)) {
+        if ((balls[i].position.y < 0) | (balls[i].position.y > display->height)) {
             balls[i].velocity.y = balls[i].velocity.y * -1;
         }
     }
@@ -92,8 +92,8 @@ void metaballs_render(hagl_backend_t const *display)
     const color_t green = hagl_color(display, 0, 255, 0);
     color_t color;
 
-    for (uint16_t y = 0; y < DISPLAY_HEIGHT; y += PIXEL_SIZE) {
-        for (uint16_t x = 0; x < DISPLAY_WIDTH; x += PIXEL_SIZE) {
+    for (uint16_t y = 0; y < display->height; y += PIXEL_SIZE) {
+        for (uint16_t x = 0; x < display->width; x += PIXEL_SIZE) {
             float sum = 0;
             for (uint8_t i = 0; i < NUM_BALLS; i++) {
                 const float dx = x - balls[i].position.x;

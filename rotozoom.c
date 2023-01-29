@@ -57,8 +57,8 @@ void rotozoom_render(hagl_backend_t const *display)
     // c = coslut[angle];
     z = s * 1.2;
 
-    for (uint16_t x = 0; x < DISPLAY_WIDTH; x = x + PIXEL_SIZE) {
-        for (uint16_t y = 0; y < DISPLAY_HEIGHT; y = y + PIXEL_SIZE) {
+    for (uint16_t x = 0; x < display->width; x = x + PIXEL_SIZE) {
+        for (uint16_t y = 0; y < display->height; y = y + PIXEL_SIZE) {
 
             /* Get a rotated pixel from the head image. */
             int16_t u = (int16_t)((x * c - y * s) * z) % HEAD_WIDTH;
