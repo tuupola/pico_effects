@@ -45,7 +45,7 @@ SPDX-License-Identifier: MIT-0
 #include "rotozoom.h"
 #include "deform.h"
 
-static uint8_t effect = 0;
+static uint8_t effect = 1;
 volatile bool fps_flag = false;
 volatile bool switch_flag = true;
 static fps_instance_t fps;
@@ -105,7 +105,7 @@ void static inline switch_demo() {
     switch(effect) {
     case 0:
         printf("Initialising metaballs.\n");
-        metaballs_init();
+        metaballs_init(display);
         break;
     case 1:
         printf("Initialising plasma.\n");
@@ -113,11 +113,11 @@ void static inline switch_demo() {
         break;
     case 2:
         printf("Initialising rotozoom.\n");
-        rotozoom_init();
+        rotozoom_init(display);
         break;
     case 3:
         printf("Initialising deform.\n");
-        deform_init();
+        deform_init(display);
         break;
     }
 
@@ -131,7 +131,7 @@ void static inline show_fps() {
     fps_flag = 0;
 
     /* Set clip window to full screen so we can display the messages. */
-    hagl_set_clip_window(display, 0, 0, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 1);
+    hagl_set_clip(display, 0, 0, display->width - 1, display->height - 1);
 
     /* Print the message on top left corner. */
     swprintf(message, sizeof(message), L"%s    ", demo[effect]);
@@ -139,14 +139,14 @@ void static inline show_fps() {
 
     /* Print the message on lower left corner. */
     swprintf(message, sizeof(message), L"%.*f FPS  ", 0, fps.current);
-    hagl_put_text(display, message, 4, DISPLAY_HEIGHT - 14, green, font6x9);
+    hagl_put_text(display, message, 4, display->height - 14, green, font6x9);
 
     /* Print the message on lower right corner. */
     swprintf(message, sizeof(message), L"%.*f KBPS  ", 0, bps.current / 1024);
-    hagl_put_text(display, message, DISPLAY_WIDTH - 60, DISPLAY_HEIGHT - 14, green, font6x9);
+    hagl_put_text(display, message, display->width - 60, display->height - 14, green, font6x9);
 
     /* Set clip window back to smaller so effects do not mess the messages. */
-    hagl_set_clip_window(display, 0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
+    hagl_set_clip(display, 0, 20, display->width - 1, display->height - 21);
 }
 
 int main()
@@ -172,20 +172,20 @@ int main()
     fps_init(&fps);
 
     // memset(&backend, 0, sizeof(hagl_backend_t));
-    // backend.buffer = malloc(MIPI_DISPLAY_WIDTH * MIPI_DISPLAY_HEIGHT * (DISPLAY_DEPTH / 8));
-    // backend.buffer2 = malloc(MIPI_DISPLAY_WIDTH * MIPI_DISPLAY_HEIGHT * (DISPLAY_DEPTH / 8));
+    // backend.buffer = malloc(MIPI_display->width * MIPI_display->height * (DISPLAY_DEPTH / 8));
+    // backend.buffer2 = malloc(MIPI_display->width * MIPI_display->height * (DISPLAY_DEPTH / 8));
     // hagl_hal_init(&backend);
     // display = &backend;
 
     // memset(&backend, 0, sizeof(hagl_backend_t));
-    // backend.buffer = malloc(MIPI_DISPLAY_WIDTH * MIPI_DISPLAY_HEIGHT * (DISPLAY_DEPTH / 8));
+    // backend.buffer = malloc(MIPI_display->width * MIPI_display->height * (DISPLAY_DEPTH / 8));
     // hagl_hal_init(&backend);
     // display = &backend;
 
     display = hagl_init();
 
     hagl_clear(display);
-    hagl_set_clip_window(display, 0, 20, DISPLAY_WIDTH - 1, DISPLAY_HEIGHT - 21);
+    hagl_set_clip(display, 0, 20, display->width - 1, display->height - 21);
 
     /* Change demo every 10 seconds. */
     add_repeating_timer_ms(10000, switch_timer_callback, NULL, &switch_timer);
@@ -199,11 +199,11 @@ int main()
 
         switch(effect) {
         case 0:
-            metaballs_animate();
+            metaballs_animate(display);
             metaballs_render(display);
             break;
         case 1:
-            plasma_animate();
+            plasma_animate(display);
             plasma_render(display);
             break;
         case 2:

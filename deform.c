@@ -42,16 +42,16 @@ static uint32_t frame;
 
 int8_t *lut;
 
-void deform_init()
+void deform_init(hagl_backend_t const *display)
 {
     /* Allocate memory for lut and store address also to ptr. */
-    int8_t *ptr = lut = malloc(DISPLAY_HEIGHT * DISPLAY_WIDTH * 2 * sizeof(int8_t));
+    int8_t *ptr = lut = malloc(display->height * display->width * 2 * sizeof(int8_t));
 
-    for (uint16_t j = 0; j < DISPLAY_HEIGHT; j += PIXEL_SIZE) {
-        for (uint16_t i = 0; i < DISPLAY_WIDTH; i += PIXEL_SIZE) {
+    for (uint16_t j = 0; j < display->height; j += PIXEL_SIZE) {
+        for (uint16_t i = 0; i < display->width; i += PIXEL_SIZE) {
 
-            const float x = -1.00f + 2.00f * i / DISPLAY_WIDTH;
-            const float y = -1.00f + 2.00f * j / DISPLAY_HEIGHT;
+            const float x = -1.00f + 2.00f * i / display->width;
+            const float y = -1.00f + 2.00f * j / display->height;
             const float r = sqrtf(x * x + y * y);
             const float a = atan2f(y, x);
 
@@ -100,8 +100,8 @@ void deform_render(hagl_backend_t const *display)
 {
     int8_t *ptr = lut;
 
-    for (uint16_t y = 0; y < DISPLAY_HEIGHT; y += PIXEL_SIZE) {
-        for (uint16_t x = 0; x < DISPLAY_WIDTH; x += PIXEL_SIZE) {
+    for (uint16_t y = 0; y < display->height; y += PIXEL_SIZE) {
+        for (uint16_t x = 0; x < display->width; x += PIXEL_SIZE) {
 
             /* Retrieve texture x and y coordinates for display coordinates. */
             int16_t u = *(ptr++) + frame;
