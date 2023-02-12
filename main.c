@@ -126,7 +126,7 @@ void static inline switch_demo() {
 }
 
 void static inline show_fps() {
-    color_t green = hagl_color(display, 0, 255, 0);
+    hagl_color_t green = hagl_color(display, 0, 255, 0);
 
     fps_flag = 0;
 
