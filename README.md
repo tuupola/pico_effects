@@ -46,3 +46,7 @@ $ picotool load firmware.uf2 -f
 ## Run on computer
 
 HAGL is hardware agnostic. You can run the demos also [on your computer](https://github.com/tuupola/sdl2_effects).
+
+## License
+
+MIT No Attribution (MIT-0). Please see [LICENSE](LICENSE) for more information.
