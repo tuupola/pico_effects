@@ -28,6 +28,7 @@ SPDX-License-Identifier: MIT-0
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <malloc.h>
 #include <wchar.h>
 #include <pico/stdlib.h>
 #include <hardware/clocks.h>
@@ -68,6 +69,20 @@ static char demo[4][32] = {
     "DEFORM",
 };
 
+size_t
+total_heap() {
+    extern char __StackLimit, __bss_end__;
+
+    return &__StackLimit  - &__bss_end__;
+}
+
+size_t
+free_heap(void) {
+    struct mallinfo m = mallinfo();
+
+    return total_heap() - m.uordblks;
+}
+
 bool switch_timer_callback(struct repeating_timer *t) {
     switch_flag = true;
     return true;
@@ -83,19 +98,15 @@ void static inline switch_demo() {
 
     switch(effect) {
     case 0:
-        printf("Closing metaballs.\n");
         //metaballs_close();
         break;
     case 1:
-        printf("Closing plasma.\n");
         plasma_close();
         break;
     case 2:
-        printf("Closing rotozoom.\n");
         //rotozoom_close();
         break;
     case 3:
-        printf("Closing deform.\n");
         deform_close();
         break;
     }
@@ -104,20 +115,20 @@ void static inline switch_demo() {
 
     switch(effect) {
     case 0:
-        printf("Initialising metaballs.\n");
         metaballs_init(display);
+        printf("[main] Initialized metaballs, %d free heap \r\n", free_heap());
         break;
     case 1:
-        printf("Initialising plasma.\n");
         plasma_init(display);
+        printf("[main] Initialized plasma, %d free heap \r\n", free_heap());
         break;
     case 2:
-        printf("Initialising rotozoom.\n");
         rotozoom_init(display);
+        printf("[main] Initialized rotozoom, %d free heap \r\n", free_heap());
         break;
     case 3:
-        printf("Initialising deform.\n");
         deform_init(display);
+        printf("[main] Initialized deform, %d free heap \r\n", free_heap());
         break;
     }
 
@@ -168,6 +179,9 @@ int main()
 
     /* Sleep so that we have time to open the serial console. */
     sleep_ms(5000);
+
+    printf("[main] %d total heap \r\n", total_heap());
+    printf("[main] %d free heap \r\n", free_heap());
 
     fps_init(&fps);
 
@@ -229,7 +243,7 @@ int main()
 
         /* Print the message in console and switch to next demo. */
         if (switch_flag) {
-            printf("%s at %d fps / %d kBps\r\n", demo[effect], (uint32_t)fps.current, (uint32_t)(bps.current / 1024));
+            printf("[main] %s at %d fps / %d kBps\r\n", demo[effect], (uint32_t)fps.current, (uint32_t)(bps.current / 1024));
             switch_demo();
         }
 
