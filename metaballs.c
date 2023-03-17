@@ -52,7 +52,8 @@ static const uint8_t MIN_RADIUS = 22;
 static const uint8_t MAX_RADIUS = 32;
 static const uint8_t PIXEL_SIZE = 2;
 
-void metaballs_init(hagl_backend_t const *display)
+void
+metaballs_init(hagl_backend_t const *display)
 {
     /* Set up imaginary balls inside screen coordinates. */
     for (int16_t i = 0; i < NUM_BALLS; i++) {
@@ -65,7 +66,8 @@ void metaballs_init(hagl_backend_t const *display)
     }
 }
 
-void metaballs_animate(hagl_backend_t const *display)
+void
+metaballs_animate(hagl_backend_t const *display)
 {
     for (int16_t i = 0; i < NUM_BALLS; i++) {
         balls[i].position.x += balls[i].velocity.x;
@@ -84,7 +86,8 @@ void metaballs_animate(hagl_backend_t const *display)
 }
 
 /* http://www.geisswerks.com/ryan/BLOBS/blobs.html */
-void metaballs_render(hagl_backend_t const *display)
+void
+metaballs_render(hagl_backend_t const *display)
 {
     const hagl_color_t background = hagl_color(display, 0, 0, 0);
     const hagl_color_t black = hagl_color(display, 0, 0, 0);

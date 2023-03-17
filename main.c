@@ -70,73 +70,83 @@ static char demo[4][32] = {
 };
 
 size_t
-total_heap() {
+total_heap()
+{
     extern char __StackLimit, __bss_end__;
 
     return &__StackLimit  - &__bss_end__;
 }
 
 size_t
-free_heap(void) {
+free_heap(void)
+{
     struct mallinfo m = mallinfo();
 
     return total_heap() - m.uordblks;
 }
 
-bool switch_timer_callback(struct repeating_timer *t) {
+bool
+switch_timer_callback(struct repeating_timer *t)
+{
     switch_flag = true;
     return true;
 }
 
-bool show_timer_callback(struct repeating_timer *t) {
+bool
+show_timer_callback(struct repeating_timer *t)
+{
     fps_flag = true;
     return true;
 }
 
-void static inline switch_demo() {
+void static inline
+switch_demo()
+{
     switch_flag = false;
 
     switch(effect) {
-    case 0:
-        //metaballs_close();
-        break;
-    case 1:
-        plasma_close();
-        break;
-    case 2:
-        //rotozoom_close();
-        break;
-    case 3:
-        deform_close();
-        break;
+        case 0:
+            //metaballs_close();
+            break;
+        case 1:
+            plasma_close();
+            break;
+        case 2:
+            //rotozoom_close();
+            break;
+        case 3:
+            deform_close();
+            break;
     }
 
     effect = (effect + 1) % 4;
 
     switch(effect) {
-    case 0:
-        metaballs_init(display);
-        printf("[main] Initialized metaballs, %d free heap \r\n", free_heap());
-        break;
-    case 1:
-        plasma_init(display);
-        printf("[main] Initialized plasma, %d free heap \r\n", free_heap());
-        break;
-    case 2:
-        rotozoom_init(display);
-        printf("[main] Initialized rotozoom, %d free heap \r\n", free_heap());
-        break;
-    case 3:
-        deform_init(display);
-        printf("[main] Initialized deform, %d free heap \r\n", free_heap());
-        break;
+        case 0:
+            metaballs_init(display);
+            printf("[main] Initialized metaballs, %d free heap \r\n", free_heap());
+            break;
+        case 1:
+            plasma_init(display);
+            printf("[main] Initialized plasma, %d free heap \r\n", free_heap());
+            break;
+        case 2:
+            rotozoom_init(display);
+            printf("[main] Initialized rotozoom, %d free heap \r\n", free_heap());
+            break;
+        case 3:
+            deform_init(display);
+            printf("[main] Initialized deform, %d free heap \r\n", free_heap());
+            break;
     }
 
     fps_init(&fps);
     aps_init(&bps);
 }
 
-void static inline show_fps() {
+void static inline
+show_fps()
+{
     hagl_color_t green = hagl_color(display, 0, 255, 0);
 
     fps_flag = 0;
@@ -160,7 +170,8 @@ void static inline show_fps() {
     hagl_set_clip(display, 0, 20, display->width - 1, display->height - 21);
 }
 
-int main()
+int
+main()
 {
     size_t bytes = 0;
     struct repeating_timer switch_timer;
@@ -212,22 +223,22 @@ int main()
         uint64_t start = time_us_64();
 
         switch(effect) {
-        case 0:
-            metaballs_animate(display);
-            metaballs_render(display);
-            break;
-        case 1:
-            plasma_animate(display);
-            plasma_render(display);
-            break;
-        case 2:
-            rotozoom_animate();
-            rotozoom_render(display);
-            break;
-        case 3:
-            deform_animate();
-            deform_render(display);
-            break;
+            case 0:
+                metaballs_animate(display);
+                metaballs_render(display);
+                break;
+            case 1:
+                plasma_animate(display);
+                plasma_render(display);
+                break;
+            case 2:
+                rotozoom_animate();
+                rotozoom_render(display);
+                break;
+            case 3:
+                deform_animate();
+                deform_render(display);
+                break;
         }
 
         /* Update the displayed fps if requested. */
