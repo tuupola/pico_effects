@@ -10,8 +10,8 @@ Below instructions assume you do not have [Raspberry Pi Pico SDK](https://github
 
 ```
 $ git clone --recursive https://github.com/raspberrypi/pico-sdk.git
-$ git clone --recursive  https://github.com/tuupola/pico_effects.git
-$ cd pico_effects/build
+$ git clone --recursive  https://github.com/tuupola/pico_effects.git
+$ cd pico_effects/build
 $ cmake ..
 $ make -j8
 ```
