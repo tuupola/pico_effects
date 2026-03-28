@@ -25,9 +25,9 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-#include <stdlib.h>
-#include <math.h>
 #include <hagl.h>
+#include <math.h>
+#include <stdlib.h>
 
 #include "head.h"
 
@@ -38,9 +38,7 @@ static uint16_t angle;
 // static float sinlut[360];
 // static float coslut[360];
 
-void
-rotozoom_init()
-{
+void rotozoom_init() {
     /* Generate look up tables. */
     // for (uint16_t i = 0; i < 360; i++) {
     //     sinlut[i] = sin(i * M_PI / 180);
@@ -48,10 +46,9 @@ rotozoom_init()
     // }
 }
 
-void
-rotozoom_render(hagl_backend_t const *display)
-{
+void rotozoom_render(hagl_backend_t const *display) {
     float s, c, z;
+    size_t cs = sizeof(hagl_color_t);
 
     s = sin(angle * M_PI / 180);
     c = cos(angle * M_PI / 180);
@@ -70,20 +67,20 @@ rotozoom_render(hagl_backend_t const *display)
             if (v < 0) {
                 v += HEAD_HEIGHT;
             }
-            hagl_color_t *color = (hagl_color_t *) (head + HEAD_WIDTH * sizeof(hagl_color_t) * v + sizeof(hagl_color_t) * u);
+            hagl_color_t *color = (hagl_color_t *)(head + HEAD_WIDTH * cs * v + cs * u);
 
             if (1 == PIXEL_SIZE) {
                 hagl_put_pixel(display, x, y, *color);
             } else {
-                hagl_fill_rectangle(display, x, y, x + PIXEL_SIZE - 1, y + PIXEL_SIZE - 1, *color);
+                hagl_fill_rectangle(
+                    display, x, y, x + PIXEL_SIZE - 1, y + PIXEL_SIZE - 1, *color
+                );
             }
             // hagl_put_pixel(x, y, *color);
         }
     }
 }
 
-void
-rotozoom_animate()
-{
+void rotozoom_animate() {
     angle = (angle + SPEED) % 360;
 }

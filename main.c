@@ -25,26 +25,26 @@ SPDX-License-Identifier: MIT-0
 
 */
 
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <malloc.h>
-#include <wchar.h>
-#include <pico/stdlib.h>
 #include <hardware/clocks.h>
+#include <malloc.h>
+#include <pico/stdlib.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <wchar.h>
 
 #include <sys/time.h>
 
-#include <hagl_hal.h>
-#include <hagl.h>
+#include <aps.h>
 #include <font6x9.h>
 #include <fps.h>
-#include <aps.h>
+#include <hagl.h>
+#include <hagl_hal.h>
 
+#include "deform.h"
 #include "metaballs.h"
 #include "plasma.h"
 #include "rotozoom.h"
-#include "deform.h"
 
 static uint8_t effect = 1;
 volatile bool fps_flag = false;
@@ -69,42 +69,32 @@ static char demo[4][32] = {
     "DEFORM",
 };
 
-size_t
-total_heap()
-{
+size_t total_heap() {
     extern char __StackLimit, __bss_end__;
 
-    return &__StackLimit  - &__bss_end__;
+    return &__StackLimit - &__bss_end__;
 }
 
-size_t
-free_heap(void)
-{
+size_t free_heap(void) {
     struct mallinfo m = mallinfo();
 
     return total_heap() - m.uordblks;
 }
 
-bool
-switch_timer_callback(struct repeating_timer *t)
-{
+bool switch_timer_callback(struct repeating_timer *t) {
     switch_flag = true;
     return true;
 }
 
-bool
-show_timer_callback(struct repeating_timer *t)
-{
+bool show_timer_callback(struct repeating_timer *t) {
     fps_flag = true;
     return true;
 }
 
-void static inline
-switch_demo()
-{
+void static inline switch_demo() {
     switch_flag = false;
 
-    switch(effect) {
+    switch (effect) {
         case 0:
             //metaballs_close();
             break;
@@ -121,7 +111,7 @@ switch_demo()
 
     effect = (effect + 1) % 4;
 
-    switch(effect) {
+    switch (effect) {
         case 0:
             metaballs_init(display);
             printf("[main] Initialized metaballs, %d free heap \r\n", free_heap());
@@ -144,9 +134,7 @@ switch_demo()
     aps_init(&bps);
 }
 
-void static inline
-show_fps()
-{
+void static inline show_fps() {
     hagl_color_t green = hagl_color(display, 0, 255, 0);
 
     fps_flag = 0;
@@ -164,15 +152,15 @@ show_fps()
 
     /* Print the message on lower right corner. */
     swprintf(message, sizeof(message), L"%.*f KBPS  ", 0, bps.current / 1024);
-    hagl_put_text(display, message, display->width - 60, display->height - 14, green, font6x9);
+    hagl_put_text(
+        display, message, display->width - 60, display->height - 14, green, font6x9
+    );
 
     /* Set clip window back to smaller so effects do not mess the messages. */
     hagl_set_clip(display, 0, 20, display->width - 1, display->height - 21);
 }
 
-int
-main()
-{
+int main() {
     size_t bytes = 0;
     struct repeating_timer switch_timer;
     struct repeating_timer show_timer;
@@ -222,7 +210,7 @@ main()
 
         uint64_t start = time_us_64();
 
-        switch(effect) {
+        switch (effect) {
             case 0:
                 metaballs_animate(display);
                 metaballs_render(display);
@@ -254,7 +242,12 @@ main()
 
         /* Print the message in console and switch to next demo. */
         if (switch_flag) {
-            printf("[main] %s at %d fps / %d kBps\r\n", demo[effect], (uint32_t)fps.current, (uint32_t)(bps.current / 1024));
+            printf(
+                "[main] %s at %d fps / %d kBps\r\n",
+                demo[effect],
+                (uint32_t)fps.current,
+                (uint32_t)(bps.current / 1024)
+            );
             switch_demo();
         }
 
